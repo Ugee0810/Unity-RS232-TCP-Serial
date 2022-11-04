@@ -1160,8 +1160,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 60
-  m_fontSizeBase: 60
+  m_fontSize: 20
+  m_fontSizeBase: 20
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -2466,7 +2466,7 @@ GameObject:
   - component: {fileID: 1223581940}
   - component: {fileID: 1223581939}
   m_Layer: 5
-  m_Name: '[Dropdown] COM'
+  m_Name: '[Dropdown] PortName'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2712,10 +2712,11 @@ MonoBehaviour:
   tmp_Status: {fileID: 306087279}
   tmp_ErrorMessage: {fileID: 368021020}
   tmp_ReceivedData: {fileID: 258227082}
-  dropdown_PortName: {fileID: 1223581939}
-  dropdown_BaudRate: {fileID: 1851127218}
+  dropdowns:
+  - {fileID: 1223581939}
+  - {fileID: 1851127218}
   btn_Connect: {fileID: 1815032770}
-  btn_DisConnect: {fileID: 130723571}
+  btn_Disconnect: {fileID: 130723571}
 --- !u!114 &1235317028
 MonoBehaviour:
   m_ObjectHideFlags: 0
