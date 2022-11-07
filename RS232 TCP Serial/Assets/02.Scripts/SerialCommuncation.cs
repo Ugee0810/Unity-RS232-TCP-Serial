@@ -10,9 +10,6 @@ public class SerialCommuncation : MonoBehaviour
 {
     //........Serial Field
     static SerialPort m_RS232Port = new();
-    int readCnt = 0;
-    byte recvByte = 0;
-    byte[] recvBuf = new byte[1024];
 
     string m_Data = string.Empty;
     //........Scene UI
@@ -161,23 +158,29 @@ public class SerialCommuncation : MonoBehaviour
     // 수신 이벤트가 발생하면 이 부분이 실행
     void DataReceived(object sender, SerialDataReceivedEventArgs e)
     {
-        //----- 시리얼 통신 방법 -----//
-        //// 시리얼 버터에 수신된 데이터를 읽어오기
-        //m_Data = m_RS232Port.ReadLine();
-        //Debug.Log("m_Data : " + m_Data);
-        //// 수신된 데이터를 UI에 전달
-        //tmp_ReceivedData.text = m_Data;
-        //// 수신한 데이터를 출력
-        //m_RS232Port.WriteLine(tmp_ReceivedData.text);
-        //Debug.Log("출력 : " + tmp_ReceivedData.text);
-        
-
-        if (m_RS232Port.BytesToRead >= 0)
+        //----- RS232 수신부
+        int RecvSize = m_RS232Port.BytesToRead;
+        string RecvStr = string.Empty;
+        tmp_ReceivedData.text = string.Empty;
+        // Recv Data가 있는 경우
+        if (RecvSize != 0)
         {
-            readCnt = m_RS232Port.Read(recvBuf, 0, 1024);
-            recvByte = recvBuf[readCnt - 1];
+            byte[] buff = new byte[RecvSize];
 
-            tmp_ReceivedData.text = readCnt.ToString();
+            // Size 만큼 Read
+            m_RS232Port.Read(buff, 0, RecvSize);
+            for (int i = 0; i < RecvSize; i++)
+            {
+                // Hex 변환
+                RecvStr += " " + buff[i].ToString("X2");
+            }
+            tmp_ReceivedData.text += RecvStr;
+        }
+
+        //----- TCP 송신부
+        if (tmp_ReceivedData.text != string.Empty)
+        {
+
         }
     }
 }
