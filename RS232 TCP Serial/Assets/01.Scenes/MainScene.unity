@@ -2715,6 +2715,8 @@ MonoBehaviour:
   dropdowns:
   - {fileID: 1223581939}
   - {fileID: 1851127218}
+  m_PortName: {fileID: 1223581939}
+  m_BaudRate: {fileID: 1851127218}
   btn_Connect: {fileID: 1815032770}
   btn_Disconnect: {fileID: 130723571}
 --- !u!114 &1235317028

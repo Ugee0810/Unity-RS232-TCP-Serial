@@ -77,28 +77,33 @@ public class SerialCommuncation : MonoBehaviour
         /// <param name="ints">BaudRate Array</param>
         void RESET_TMP_Dropdown(TMP_Dropdown[] m_TMP_Dropdown, string[] strings, int[] ints)
         {
+            int temp;
             // 리스너 할당 해제, 옵션 초기화
             for (int i = 0; i < m_TMP_Dropdown.Length; i++)
             {
-                m_TMP_Dropdown[i].onValueChanged.RemoveAllListeners();
-                m_TMP_Dropdown[i].options.Clear();
+                temp = i;
+                m_TMP_Dropdown[temp].onValueChanged.RemoveAllListeners();
+                m_TMP_Dropdown[temp].options.Clear();
             }
             // PortName 옵션 추가
             for (int i = 0; i < strings.Length; i++)
             {
-                TMP_Dropdown.OptionData newData = new() { text = strings[i] };
+                temp = i;
+                TMP_Dropdown.OptionData newData = new() { text = strings[temp] };
                 m_TMP_Dropdown[0].options.Add(newData);
             }
             // BaudRate 옵션 추가
             for (int i = 0; i < ints.Length; i++)
             {
-                TMP_Dropdown.OptionData newData = new() { text = ints[i].ToString() };
+                temp = i;
+                TMP_Dropdown.OptionData newData = new() { text = ints[temp].ToString() };
                 m_TMP_Dropdown[1].options.Add(newData);
             }
             for (int i = 0; i < m_TMP_Dropdown.Length; i++)
             {
-                m_TMP_Dropdown[i].SetValueWithoutNotify(-1);
-                m_TMP_Dropdown[i].SetValueWithoutNotify(0);
+                temp = i;
+                m_TMP_Dropdown[temp].SetValueWithoutNotify(-1);
+                m_TMP_Dropdown[temp].SetValueWithoutNotify(0);
             }
         }
     }
