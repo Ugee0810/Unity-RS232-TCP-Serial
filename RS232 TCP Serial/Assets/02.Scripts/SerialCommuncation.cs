@@ -1,17 +1,16 @@
 using System;
+using System.Collections;
+using System.Text;
 using System.IO.Ports; // 시리얼 통신을 위해 추가
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
 using TMPro;
-using System.Text;
-using UnityEditor.Experimental.GraphView;
 
 public class SerialCommuncation : MonoBehaviour
 {
     //........Serial Field
-    static SerialPort m_RS232Port = new();
-
-    string m_Data = string.Empty;
+    static SerialPort m_RS232Port = new SerialPort();
     //........Scene UI
     public TMP_Text tmp_Status;
     public TMP_Text tmp_ErrorMessage;
@@ -32,8 +31,8 @@ public class SerialCommuncation : MonoBehaviour
         // Serial Port Close
         if (m_RS232Port.IsOpen) m_RS232Port.Close();
         // UI AddListener
-        dropdowns[0].onValueChanged.AddListener( delegate { DropdownPortName(m_PortName); });
-        dropdowns[1].onValueChanged.AddListener( delegate { DropdownBaudRate(m_BaudRate); });
+        dropdowns[0].onValueChanged.AddListener(delegate { DropdownPortName(m_PortName); });
+        dropdowns[1].onValueChanged.AddListener(delegate { DropdownBaudRate(m_BaudRate); });
         btn_Connect.onClick.AddListener(BTN_Connect);
         btn_Disconnect.onClick.AddListener(BTN_Disconnect);
     }
@@ -61,7 +60,6 @@ public class SerialCommuncation : MonoBehaviour
     {
         selectedPortName = "COM1";
         selectedBaudRate = 300;
-        m_Data = string.Empty;
         tmp_ErrorMessage.text = "";
         tmp_ReceivedData.text = "";
         RESET_TMP_Dropdown(dropdowns, strings_PortName, ints_BaudRate);
@@ -86,14 +84,16 @@ public class SerialCommuncation : MonoBehaviour
             for (int i = 0; i < strings.Length; i++)
             {
                 temp = i;
-                TMP_Dropdown.OptionData newData = new() { text = strings[temp] };
+                TMP_Dropdown.OptionData newData = new TMP_Dropdown.OptionData();
+                newData.text = strings[temp];
                 m_TMP_Dropdown[0].options.Add(newData);
             }
             // BaudRate 옵션 추가
             for (int i = 0; i < ints.Length; i++)
             {
                 temp = i;
-                TMP_Dropdown.OptionData newData = new() { text = ints[temp].ToString() };
+                TMP_Dropdown.OptionData newData = new TMP_Dropdown.OptionData();
+                newData.text = ints[temp].ToString();
                 m_TMP_Dropdown[1].options.Add(newData);
             }
             for (int i = 0; i < m_TMP_Dropdown.Length; i++)
@@ -166,21 +166,54 @@ public class SerialCommuncation : MonoBehaviour
         if (RecvSize != 0)
         {
             byte[] buff = new byte[RecvSize];
-
             // Size 만큼 Read
             m_RS232Port.Read(buff, 0, RecvSize);
+            // Hex 변환
             for (int i = 0; i < RecvSize; i++)
-            {
-                // Hex 변환
                 RecvStr += " " + buff[i].ToString("X2");
-            }
             tmp_ReceivedData.text += RecvStr;
         }
-
         //----- TCP 송신부
         if (tmp_ReceivedData.text != string.Empty)
         {
-
+            Server server = new Server();
+            server.OnStartButton();
+            videoPlayer.Play();
         }
     }
+
+    // 영상 출력을 위한 RawImage
+    [SerializeField] RawImage rawImageDrawVideo;
+    // 영상 재생용 VideoPlayer
+    [SerializeField] VideoPlayer videoPlayer;
+    //// 사운드 재생용 AudioSource
+    //[SerializeField] AudioSource audioSource;
+
+    //public void OnLoad(System.IO.FileInfo file)
+    //{
+    //    // MP4 파일을 불러와서 재생
+    //    StartCoroutine(LoadVideo(file.FullName));
+    //}
+
+    //IEnumerator LoadVideo(string fullPath)
+    //{
+    //    // 경로 정보 설정
+    //    videoPlayer.url = "file://" + fullPath;
+    //    // 동영상 소리 재생 모드 : AudioSource
+    //    videoPlayer.audioOutputMode = VideoAudioOutputMode.AudioSource;
+    //    // 동영상 소리를 재생할 AudioSource 설정
+    //    videoPlayer.EnableAudioTrack(0, true);
+    //    // 오디오 트랙 디코딩 활성/비활성화(VideoPlayer가 재생 중이 아닐 때 설정)
+    //    videoPlayer.SetTargetAudioSource(0, audioSource);
+    //    // videoPlayer에 등록된 영상이 사운드 재생으로 사용하기 때문에 audioSource.clip은 비워둔다.
+    //    audioSource.clip = null;
+    //    // 동영상에 출력되는 이미지를 imageDrawTexture에 설정(설정이 안되어 있으면 코드로 설정)
+    //    rawImageDrawVideo.texture = videoPlayer.targetTexture;
+    //    // clip 정보를 동적으로 변경할 때는 Prepare() 호출 후 Prepare가 완료되어야 재생 가능
+    //    videoPlayer.Prepare();
+    //    while (!videoPlayer.isPrepared) yield return null;
+    //    // MP4 동영상/사운드 재생
+    //    videoPlayer.Play();
+    //    audioSource.Play();
+    //}
 }
